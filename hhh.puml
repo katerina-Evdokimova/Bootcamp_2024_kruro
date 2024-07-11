@@ -1,0 +1,433 @@
+@startuml
+class com.mygdx.game.Managers.AudioManager {
++ {static} Music backgroundMusic
++ Sound shootSound
++ Sound explosionSound
++ Sound deploySound
++ {static} int sound
++ boolean isMusicOn
++ {static} void updateSoundFlag(int)
++ {static} void updateMusicFlag(int)
++ {static} void playbgMusic()
++ {static} void playgmMusic()
+}
+
+
+class com.mygdx.game.utility.GameSettings {
++ {static} float SCALE
++ {static} int SCREEN_WIDTH
++ {static} int SCREEN_HEIGHT
++ {static} float STEP_TIME
++ {static} int VELOCITY_ITERATIONS
++ {static} int POSITION_ITERATIONS
++ {static} short ENEMY_BIT
++ {static} short MAIN_HERO_BIT
++ {static} short BASE_TOWER_BIT
++ {static} short BASE_BULLET_BIT
++ {static} int BASE_BULLET_DAMAGE
++ {static} int BASE_TOWER_ATTACK_COOL_DOWN
++ {static} float BASE_TOWER_ATTACK_RADIUS
++ {static} int BULLET_VELOCITY
++ {static} float MAP_SCALE
++ {static} int ENEMY_SPAWN_TIME
++ {static} int ENEMY_SPAWN_TIME2
++ {static} int ENEMY_SPAWN_TIME3
++ {static} int ENEMY_COUNT
++ {static} int ENEMY2_COUNT
++ {static} int ENEMY3_COUNT
++ {static} float ENEMY_SPEED
++ {static} float ENEMY2_SPEED
++ {static} float ENEMY3_SPEED
++ {static} int ENEMY1_HEALTH
++ {static} int ENEMY2_HEALTH
++ {static} int ENEMY3_HEALTH
++ {static} long wasd
++ {static} long WAVE_REST_TIME
++ {static} int TOWER1_COST
++ {static} int TOWER2_COST
++ {static} int TOWER3_COST
++ {static} int TOWER1_DAMAGE
++ {static} int TOWER2_DAMAGE
++ {static} int TOWER3_DAMAGE
++ {static} int TIME_MACHINE_INCREMENT
++ {static} int TIME_MACHINE_GOAL
+}
+
+class com.mygdx.game.ui.ImageView {
+~ Texture texture
++ void draw(SpriteBatch)
++ void dispose()
+}
+
+
+class com.mygdx.game.screens.SettingsScreen {
+~ MyGdxGame myGdxGame
+~ ImageView blackoutMid
+~ ImageView backgroundView
+~ ButtonView returnButton
+~ {static} Slider slider
+~ Stage stage
+~ TextView soundText
++ void render(float)
++ {static} int getSound()
++ {static} int getMusic()
+~ void handleInput()
+}
+
+
+class com.mygdx.game.ui.ButtonView {
+~ Texture texture
+~ BitmapFont bitmapFont
+~ String text
+~ float textX
++ void draw(SpriteBatch)
++ void dispose()
+}
+
+
+class com.mygdx.game.ui.FontBuilder {
++ {static} BitmapFont generate(int,Color,String)
+}
+
+class com.mygdx.game.Managers.ContactManager {
+~ World world
+}
+
+class com.mygdx.game.MyGdxGame {
++ World world
++ BitmapFont commonWhiteFont
++ Vector3 touch
++ {static} SpriteBatch batch
++ {static} OrthographicCamera camera
++ GameScreen gameScreen
+~ float accumulator
++ MenuScreen menuScreen
++ SettingsScreen settingsScreen
++ DialogScreen dialogScreen
++ void create()
++ void dispose()
++ void stepWorld()
+}
+
+
+class com.mygdx.game.utility.GameSession {
++ GameState state
+~ int balance
+~ long nextEnemySpawnTime
+~ long nextEnemySpawnTime2
+~ long nextEnemySpawnTime3
+~ int countReleasedEnemies
+~ int countReleasedEnemies2
+~ int countReleasedEnemies3
+~ boolean levelFlag
+- int level
+~ long startRestTime
++ void startGame()
++ void pauseGame()
++ void progressGame()
++ void resumeGame()
++ void endGame()
++ boolean shouldSpawnEnemy()
++ boolean shouldSpawnEnemy2()
++ boolean shouldSpawnEnemy3()
++ boolean isRest()
++ int getBalance()
++ void addBalance(int)
++ void reduceBalance(int)
++ void levelUp()
++ int getLevel()
+}
+
+
+class com.mygdx.game.utility.Path {
+- List<Vector2> points
++ Vector2 getPoint(int)
++ int getLength()
+}
+
+
+class com.mygdx.game.ui.RecordsListView {
++ void setRecords(ArrayList<Integer>)
+}
+
+class com.mygdx.game.ui.TextView {
+# BitmapFont font
+# String text
++ void setText(String)
++ void setXY(int,int)
++ void draw(SpriteBatch)
++ void dispose()
+}
+
+
+class com.mygdx.game.screens.MenuScreen {
+~ MyGdxGame myGdxGame
+~ TextView gameName
+~ ImageView background
+~ ButtonView startGameButton
+~ ButtonView settingsButton
+~ ButtonView exitButton
+~ TextView recordsTextView
+~ RecordsListView recordsListView
++ void show()
++ void render(float)
+- void handleInput()
++ void dispose()
+}
+
+
+class com.mygdx.game.objects.BulletObject {
++ boolean wasHit
++ int damage
++ boolean hasToBeDestroyed()
++ void hit(int)
++ int getDamage()
+}
+
+
+class com.mygdx.game.objects.EnemyObject {
+- int currentIndex
+- float speed
+~ ShapeDrawer drawer
+- Path path
++ int livesLeft
++ int maxHealth
++ boolean needToHitPLayer
+~ Vector2 positionT
++ ShapeRenderer shapeRenderer
+~ Texture texture
+~ Texture[] framesArray
++ int frameCounter
++ void update(float)
++ void setSpeed(int)
++ void draw(SpriteBatch)
++ boolean isAlive()
++ int getLiveLeft()
++ int getMaxHealth()
++ void hit(int)
++ boolean needToHit()
+}
+
+
+enum com.mygdx.game.utility.GameState {
++  PLAYING
++  PAUSED
++  ENDED
++  PROGRESS
+}
+
+class com.mygdx.game.screens.GameScreen {
+~ MyGdxGame myGdxGame
+~ GameSession gameSession
+~ ContactManager contactManager
+~ AudioManager audioManager
+- int timeMachineProgress
+- boolean showTimeMachineView
+- ProgressBar timeMachineProgressBar
+- TextView timeMachineTextView
+~ boolean needToNotify
+~ TiledMap tiledMap
+~ Path path
+~ Vector2 startPos
+~ float startNotify
+~ MainHeroObject hero
+~ ArrayList<BaseTowerObject> towerArray
+~ ArrayList<EnemyObject> enemyArray
+- OrthogonalTiledMapRenderer tiledMapRenderer
+~ boolean isMenuExecuted
+~ boolean isClickerSmall
+~ boolean isUpgradeMenuExecuted
+~ boolean needToColorRed
+~ long redStarttime
+~ float x_cord
+~ ButtonView button1
+~ ImageView unitMenu
+~ TextView balanceTextView
+~ ImageView clicker
+~ ImageView fullBlackoutView
+~ TextView pauseTextView
+~ ButtonView homeButton
+~ TextView resultTextView
+~ TextView progressBarTextView
+~ ButtonView homeButton2
+~ ButtonView timeMachineButton
++ void show()
++ void loadMap()
+- void draw()
++ void render(float)
+- void drawTimeMachineView()
++ int levelCost(float,float)
+- void handleInput()
+- boolean tileIsEmpty(int,int)
+- boolean hasObjectCoordinates(String,Vector3)
++ void drawMenu()
++ void drawMenuUpgrade()
+- void update()
+- void restartGame()
++ void dispose()
+}
+
+
+class com.mygdx.game.Managers.MemoryManager {
+- {static} Preferences preferences
++ {static} void saveSoundSettings(int)
++ {static} int SoundValue()
++ {static} void saveMusicSettings(int)
++ {static} int MusicValue()
++ {static} void saveTableOfRecords(ArrayList<Integer>)
++ {static} ArrayList<Integer> loadRecordsTable()
++ {static} void saveDialogue(boolean)
++ {static} boolean loadDialogue()
++ {static} void saveTimeMachineProgress(int)
++ {static} int timeMachineProgress()
+}
+
+
+class com.mygdx.game.ui.View {
+~ float x
+~ float y
+~ float width
+~ float height
++ void draw(SpriteBatch)
++ void dispose()
++ boolean isHit(float,float)
+}
+
+
+class com.mygdx.game.screens.DialogScreen {
+- MyGdxGame game
+- SpriteBatch batch
+- BitmapFont font
+- Texture background
+- String[] dialogLines
+- int currentLine
+- float charDelay
+- float charTimer
+- String currentDisplayText
+- boolean fullTextDisplayed
++ void show()
++ void render(float)
++ void resize(int,int)
++ void pause()
++ void resume()
++ void hide()
++ void dispose()
+}
+
+
+class com.mygdx.game.utility.GameResources {
++ {static} String BLACKOUT
++ {static} String WHITE
++ {static} String WHITE_BUTTON
++ {static} String clicker
++ {static} String CAMERA_UI
++ {static} String close_button
++ {static} String TOWER_IMG_PATH
++ {static} String TOWER_IMG_PATH2
++ {static} String TOWER_IMG_PATH3
++ {static} String TOWER_IMG_PATH4
++ {static} String TOWER_IMG_PATH5
++ {static} String TOWER_IMG_PATH6
++ {static} String TOWER_IMG_PATH7
++ {static} String TOWER_IMG_PATH8
++ {static} String TOWER_IMG_PATH9
++ {static} String BUTTON
++ {static} String RED_BULLET_PATH
++ {static} String MAIN_HERO_IMG_PATH
++ {static} String LIVE1_IMG_PATH
++ {static} String LIVE_IMG_PATH
++ {static} String FONT_PATH
++ {static} String BACKGROUND
++ {static} String PAUSE_IMG_PATH
++ {static} String TOWER_CREATE
++ {static} String SHOOT_SOUND_PATH
++ {static} String BACKGROUND_MUSIC_PATH
++ {static} String GAME_BACKGROUND_MUSIC_PATH
+}
+
+class com.mygdx.game.ui.TimeMachineView {
+- ProgressBar progressBar
+- float progress
+- {static} float MAX_PROGRESS
++ void addProgress(float)
++ float getProgress()
++ boolean isCompleted()
+}
+
+
+abstract class com.mygdx.game.objects.GameObject {
++ int width
++ Body body
++ short cBits
+~ Texture texture
++ void draw(SpriteBatch)
++ Texture getTexture()
++ int getX()
++ int getY()
++ void setX(int)
++ void setY(int)
++ void hit(int)
++ void kill()
++ void returnXY()
+- Body createBody(float,float,int,World)
++ void dispose()
+}
+
+
+class com.mygdx.game.objects.MainHeroObject {
++ {static} int livesLeft
+~ int maxHealth
++ {static} int heroDamage
++ {static} boolean needToNotify
+~ long notifyStartTime
++ void draw(SpriteBatch)
++ void hit(int)
++ void notifyCheck()
++ boolean isAlive()
++ int getLiveLeft()
++ void setLivesLeft(int)
+}
+
+
+class com.mygdx.game.objects.BaseTowerObject {
+- int levelNumber
+~ AudioManager audioManager
++ int attackCoolDown
+~ long lastShotTime
++ int damage
+- World world
+~ Vector2 direction
++ ArrayList<BulletObject> bulletArray
+- int tempX
++ float rotation
++ void draw(SpriteBatch)
+- boolean needToShoot()
++ void shoot(ArrayList<EnemyObject>)
++ float getAngleToEnemy(Vector2,Vector2)
++ void updateRotation(Vector2)
++ void updateBullets()
++ void putInBox()
++ int getLevelNumber()
++ void setLevelNumber(int)
++ int getDamage()
+}
+
+
+
+
+com.mygdx.game.ui.View <|-- com.mygdx.game.ui.ImageView
+com.badlogic.gdx.ScreenAdapter <|-- com.mygdx.game.screens.SettingsScreen
+com.mygdx.game.ui.View <|-- com.mygdx.game.ui.ButtonView
+com.badlogic.gdx.Game <|-- com.mygdx.game.MyGdxGame
+com.mygdx.game.ui.TextView <|-- com.mygdx.game.ui.RecordsListView
+com.mygdx.game.ui.View <|-- com.mygdx.game.ui.TextView
+com.badlogic.gdx.ScreenAdapter <|-- com.mygdx.game.screens.MenuScreen
+com.mygdx.game.objects.GameObject <|-- com.mygdx.game.objects.BulletObject
+com.mygdx.game.objects.GameObject <|-- com.mygdx.game.objects.EnemyObject
+com.badlogic.gdx.ScreenAdapter <|-- com.mygdx.game.screens.GameScreen
+com.badlogic.gdx.utils.Disposable <|.. com.mygdx.game.ui.View
+com.badlogic.gdx.Screen <|.. com.mygdx.game.screens.DialogScreen
+com.badlogic.gdx.scenes.scene2d.ui.Table <|-- com.mygdx.game.ui.TimeMachineView
+com.mygdx.game.objects.GameObject <|-- com.mygdx.game.objects.MainHeroObject
+com.mygdx.game.objects.GameObject <|-- com.mygdx.game.objects.BaseTowerObject
+@enduml
